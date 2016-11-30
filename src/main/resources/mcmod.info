@@ -1,0 +1,21 @@
+[
+{
+  "modid": "customachievements",
+  "name": "Custom Achievements",
+  "description": "Create custom achievements only by editing a configuration file",
+  "version": "0.1",
+  "mcversion": "1.10.2",
+  "url": "",
+  "updateUrl": "",
+  "authorList": [
+    "ernstlustig"
+  ],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [
+  ],
+  "parent":"",
+  "dependencies": [
+  ]
+}
+]
