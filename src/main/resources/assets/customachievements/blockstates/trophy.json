@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "customachievements:trophy", "y": 180 },
+    "facing=south": { "model": "customachievements:trophy" },
+    "facing=west":  { "model": "customachievements:trophy", "y": 90 },
+    "facing=east":  { "model": "customachievements:trophy", "y": 270 }
+  }
+}
