@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -20,11 +21,15 @@ public class RenderTrophy extends TileEntitySpecialRenderer {
                 GlStateManager.translate( (float) x + 0.5f, (float) y + 0.75f, (float) z + 0.5f );
                 double time = Minecraft.getSystemTime();
                 GlStateManager.rotate( (float)( ( time / 20d ) % 360 ), 0, 1, 0 );
+                if( !( stack.getItem() instanceof ItemBlock ) ){
+                    float scaleFactor = 0.7f;
+                    GlStateManager.scale( scaleFactor, scaleFactor, scaleFactor );
+                }
                 Minecraft.getMinecraft().getRenderItem().renderItem( stack, ItemCameraTransforms.TransformType.FIXED );
                 GlStateManager.popMatrix();
             }
             String player = ((TileEntityTrophy) te).getPlayer();
-            if( !player.isEmpty() ){
+            if( player != null && !player.isEmpty() ){
                 GlStateManager.pushMatrix();
                 GlStateManager.translate( (float) x + 0.5f, (float) y + 0.5f, (float) z + 0.5f );
                 GlStateManager.rotate( 180, 0, 0, 1 );
@@ -34,7 +39,7 @@ public class RenderTrophy extends TileEntitySpecialRenderer {
                 GlStateManager.scale( 0.008f, 0.008f, 1 );
                 getFontRenderer().drawString( player, - getFontRenderer().getStringWidth( player ) / 2, 0, 0 );
                 GlStateManager.popMatrix();
-        }
+            }
         }
     }
 }

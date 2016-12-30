@@ -4,6 +4,7 @@ import com.davqvist.customachievements.material.MaterialStandard;
 import com.davqvist.customachievements.reference.Reference;
 import com.davqvist.customachievements.tileentity.TileEntityTrophy;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -13,6 +14,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -21,6 +23,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -108,17 +111,36 @@ public class BlockTrophy extends Block implements ITileEntityProvider {
     }
 
     @Override
-    public List<ItemStack> getDrops( IBlockAccess world, BlockPos pos, IBlockState state, int fortune ){
+    public void breakBlock( World worldIn, BlockPos pos, IBlockState state ){
+        if( !worldIn.isRemote ){
+            TileEntity te = worldIn.getTileEntity( pos );
+            ItemStack stack = getItemFromBlock( worldIn, pos );
+            if( stack != null ){
+                worldIn.spawnEntityInWorld( new EntityItem( worldIn, pos.getX(), pos.getY(), pos.getZ(), stack ) );
+            }
+        }
+
+        super.breakBlock( worldIn, pos, state );
+    }
+
+    public ItemStack getPickBlock( IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player ){
+        return getItemFromBlock( world, pos );
+    }
+
+    private ItemStack getItemFromBlock( World world, BlockPos pos ){
         TileEntity te = world.getTileEntity( pos );
-        ArrayList<ItemStack> result = new ArrayList<ItemStack>();
+        ItemStack stack = new ItemStack( Item.getItemFromBlock( this ) );
         if( te instanceof TileEntityTrophy ){
-            ItemStack stack = new ItemStack( Item.getItemFromBlock( this ) );
             NBTTagCompound compound = new NBTTagCompound();
             compound = te.writeToNBT( compound );
             stack.setTagCompound( compound );
-            result.add( stack );
         }
-        return result;
+        return stack;
+    }
+
+    @Override
+    public List<ItemStack> getDrops( IBlockAccess world, BlockPos pos, IBlockState state, int fortune ){
+        return new ArrayList<ItemStack>();
     }
 
     @Override

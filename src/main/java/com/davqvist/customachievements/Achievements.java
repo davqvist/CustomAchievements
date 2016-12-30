@@ -6,6 +6,7 @@ import com.davqvist.customachievements.utility.LogHelper;
 import com.davqvist.customachievements.utility.NBTHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -53,8 +54,12 @@ public class Achievements {
 
     public static void trigger( Achievement achievement, EntityPlayer player ){
         if( player != null ){
+            boolean getTrophy = false;
+            if( !player.worldObj.isRemote && player instanceof EntityPlayerMP && !player.hasAchievement( achievement ) && achievementsTrophy.get( achievement.hashCode() ) ){
+                getTrophy = true;
+            }
             player.addStat( achievement );
-            if( !player.worldObj.isRemote && achievementsTrophy.get( achievement.hashCode() ) ){
+            if( player.hasAchievement( achievement ) && getTrophy ){
                 ItemStack is = new ItemStack( ModBlocks.trophy );
                 NBTTagCompound compound = NBTHelper.getTagCompound( is );
                 compound.setTag( "item", achievement.theItemStack.serializeNBT() );

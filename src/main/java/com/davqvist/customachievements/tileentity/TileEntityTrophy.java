@@ -29,7 +29,7 @@ public class TileEntityTrophy extends TileEntity {
         super.writeToNBT( compound );
         compound.setTag( "item", is.serializeNBT() );
         if( !player.isEmpty() ){ compound.setString( "player", player ); }
-        if( facing != null ){ compound.setInteger( "facing", facing.ordinal() ); }
+        if( facing != null ){ compound.setInteger( "facing", facing.getHorizontalIndex() ); }
         return compound;
     }
 
