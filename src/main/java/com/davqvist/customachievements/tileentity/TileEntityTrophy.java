@@ -1,11 +1,14 @@
 package com.davqvist.customachievements.tileentity;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class TileEntityTrophy extends TileEntity {
 
@@ -27,8 +30,8 @@ public class TileEntityTrophy extends TileEntity {
     @Override
     public NBTTagCompound writeToNBT( NBTTagCompound compound ){
         super.writeToNBT( compound );
-        compound.setTag( "item", is.serializeNBT() );
-        if( !player.isEmpty() ){ compound.setString( "player", player ); }
+        if( is != null ){ compound.setTag( "item", is.serializeNBT() ); }
+        if( player != null && !player.isEmpty() ){ compound.setString( "player", player ); }
         if( facing != null ){ compound.setInteger( "facing", facing.getHorizontalIndex() ); }
         return compound;
     }
@@ -52,5 +55,10 @@ public class TileEntityTrophy extends TileEntity {
         if( compound.hasKey( "facing" ) ){
             facing = EnumFacing.getHorizontal( compound.getInteger( "facing" ) );
         }
+    }
+
+    @Override
+    public boolean shouldRefresh( World world, BlockPos pos, IBlockState oldState, IBlockState newSate ){
+        return ( oldState.getBlock() != newSate.getBlock() );
     }
 }

@@ -3,6 +3,7 @@ package com.davqvist.customachievements.block;
 import com.davqvist.customachievements.material.MaterialStandard;
 import com.davqvist.customachievements.reference.Reference;
 import com.davqvist.customachievements.tileentity.TileEntityTrophy;
+import com.davqvist.customachievements.utility.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockHorizontal;
@@ -121,6 +122,18 @@ public class BlockTrophy extends Block implements ITileEntityProvider {
         }
 
         super.breakBlock( worldIn, pos, state );
+    }
+
+    @Override
+    public boolean rotateBlock( World world, BlockPos pos, EnumFacing axis ){
+        TileEntity te = world.getTileEntity( pos );
+        if( te instanceof TileEntityTrophy ){
+            EnumFacing newfacing = ( (TileEntityTrophy) te).getFacing().rotateY();
+            ((TileEntityTrophy) te).setFacing( newfacing );
+            world.setBlockState( pos, world.getBlockState( pos ).withProperty( FACING, newfacing ) );
+            return true;
+        }
+        return false;
     }
 
     public ItemStack getPickBlock( IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player ){
