@@ -1,14 +1,5 @@
 package com.davqvist.customachievements.resource;
 
-import com.davqvist.customachievements.CustomAchievements;
-import com.davqvist.customachievements.config.AchievementsReader;
-import com.davqvist.customachievements.utility.LogHelper;
-import com.google.common.base.Charsets;
-import net.minecraft.client.resources.IResourcePack;
-import net.minecraft.client.resources.data.IMetadataSection;
-import net.minecraft.client.resources.data.MetadataSerializer;
-import net.minecraft.util.ResourceLocation;
-
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -16,10 +7,20 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.Set;
 
+import com.davqvist.customachievements.CustomAchievements;
+import com.davqvist.customachievements.config.AchievementsReader;
+import com.davqvist.customachievements.utility.LogHelper;
+import com.google.common.base.Charsets;
+
+import net.minecraft.client.resources.IResourcePack;
+import net.minecraft.client.resources.data.IMetadataSection;
+import net.minecraft.client.resources.data.MetadataSerializer;
+import net.minecraft.util.ResourceLocation;
+
 public class AchievementResourcePack implements IResourcePack {
     @Override
     public InputStream getInputStream( ResourceLocation location ) throws IOException {
-        if( location.getResourcePath().equals( "lang/en_US.lang" ) ){
+        if( location.getResourcePath().equalsIgnoreCase( "lang/en_US.lang" ) ){
             LogHelper.info( "CustomAchievements Translation Resource Pack loaded.");
             String translation = "";
             for( AchievementsReader.AchievementList alist : CustomAchievements.proxy.ar.root.achievements ){
@@ -35,7 +36,7 @@ public class AchievementResourcePack implements IResourcePack {
 
     @Override
     public boolean resourceExists( ResourceLocation location ){
-        return location.getResourcePath().equals( "lang/en_US.lang" );
+        return location.getResourcePath().equalsIgnoreCase( "lang/en_US.lang" );
     }
 
     @Override
