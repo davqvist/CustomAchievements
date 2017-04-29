@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.davqvist.customachievements.utility.LogHelper;
 import com.google.gson.Gson;
@@ -13,22 +14,23 @@ import com.google.gson.stream.JsonReader;
 
 public class AchievementsReader {
 
-    public GsonStart root;
+    public AchievementsRoot root;
 
     public void readAchievements( File file ){
         if( file.exists() ){
             try {
                 Gson gson = new Gson();
                 JsonReader reader = new JsonReader( new FileReader( file ) );
-                root = gson.fromJson( reader, GsonStart.class );
+                root = gson.fromJson( reader, AchievementsRoot.class );
             } catch ( Exception e ){
                 LogHelper.error( "The CustomAchievements json was invalid and is ignored.");
                 e.printStackTrace();
             }
         } else{
-            root = new GsonStart();
-            root.tabname = "CustomAchievements";
-            AchievementList al1 = new AchievementList();
+        	root = new AchievementsRoot();
+            AchievementTab tab = new AchievementTab();
+            tab.tabname = "CustomAchievements";
+            AchievementDesciptor al1 = new AchievementDesciptor();
             al1.uid = "detectLog";
             al1.name = "Log detected";
             al1.desc = "Pick up a log";
@@ -37,8 +39,8 @@ public class AchievementsReader {
             al1.ignoreMeta = true;
             al1.xpos = 0;
             al1.ypos = 0;
-            root.achievements.add( al1 );
-            AchievementList al2 = new AchievementList();
+            tab.achievements.add( al1 );
+            AchievementDesciptor al2 = new AchievementDesciptor();
             al2.uid = "craftAcaciaPlanks";
             al2.name = "Acacia Planks crafted";
             al2.desc = "Craft Acacia Planks";
@@ -49,7 +51,8 @@ public class AchievementsReader {
             al2.trophy = true;
             al2.xpos = 1;
             al2.ypos = 0;
-            root.achievements.add( al2 );
+            tab.achievements.add( al2 );
+            root.tabs.add(tab);
 
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String json = gson.toJson( root );
@@ -64,12 +67,16 @@ public class AchievementsReader {
         }
     }
 
-    public class GsonStart {
-        public String tabname;
-        public ArrayList<AchievementList> achievements = new ArrayList<>();
+    public class AchievementsRoot {
+    	public ArrayList<AchievementTab> tabs = new ArrayList<>();
     }
     
-    public class AchievementList {
+    public class AchievementTab {
+    	public String tabname;
+        public ArrayList<AchievementDesciptor> achievements = new ArrayList<>();
+    }
+    
+    public class AchievementDesciptor {
         public String uid;
         public String name;
         public String desc;

@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.davqvist.customachievements.config.AchievementsReader;
+import com.davqvist.customachievements.config.AchievementsReader.AchievementDesciptor;
+import com.davqvist.customachievements.config.AchievementsReader.AchievementTab;
 import com.davqvist.customachievements.init.ModBlocks;
 import com.davqvist.customachievements.utility.NBTHelper;
 
@@ -28,27 +31,30 @@ public class Achievements {
     public static List<Achievement> craftAchievements = new ArrayList<>();
 
     public static void init() {
+    	for(AchievementTab tab : CustomAchievements.proxy.ar.root.tabs)
+	        for( AchievementsReader.AchievementDesciptor alist : tab.achievements ){
+	            if( !alist.uid.isEmpty() ){
+	                int meta = 0;
+	                if( alist.meta != null ){ meta = alist.meta; }
+	                ItemStack is = new ItemStack( Item.getByNameOrId( alist.item ), 1, meta );
+	                if( !is.isEmpty() ) {
+	                    Achievement tempAch = new Achievement( "achievement." + alist.uid, alist.uid, alist.xpos, alist.ypos, is, achievements.get( alist.parent ) ).registerStat();
+	                    achievements.put( alist.uid, tempAch );
+	                    achievementsIgnoreMeta.put( tempAch.hashCode(), alist.ignoreMeta );
+	                    achievementsTrophy.put( tempAch.hashCode(), alist.trophy );
+	
+	                    if( alist.type.equals( "Detect" ) ){ detectAchievements.add( tempAch ); }
+	                    if( alist.type.equals( "Craft" ) ){ craftAchievements.add( tempAch ); }
+	                }
+	            }
+	        }
 
-        for( AchievementsReader.AchievementList alist : CustomAchievements.proxy.ar.root.achievements ){
-            if( !alist.uid.isEmpty() ){
-                int meta = 0;
-                if( alist.meta != null ){ meta = alist.meta; }
-                ItemStack is = new ItemStack( Item.getByNameOrId( alist.item ), 1, meta );
-                if( !is.isEmpty() ) {
-                    Achievement tempAch = new Achievement( "achievement." + alist.uid, alist.uid, alist.xpos, alist.ypos, is, achievements.get( alist.parent ) ).registerStat();
-                    achievements.put( alist.uid, tempAch );
-                    achievementsIgnoreMeta.put( tempAch.hashCode(), alist.ignoreMeta );
-                    achievementsTrophy.put( tempAch.hashCode(), alist.trophy );
-
-                    if( alist.type.equals( "Detect" ) ){ detectAchievements.add( tempAch ); }
-                    if( alist.type.equals( "Craft" ) ){ craftAchievements.add( tempAch ); }
-                }
-            }
+        for(AchievementTab tab : CustomAchievements.proxy.ar.root.tabs) {
+	        String tabName = tab.tabname.isEmpty() ? "Custom Achievements" : tab.tabname;
+	        List<Achievement> achievementList = tab.achievements.stream().filter((a) -> achievements.containsKey(a.uid)).map((a) -> achievements.get(a.uid)).collect(Collectors.toList());
+	        page = new AchievementPage( tabName, achievementList.toArray( new Achievement[achievementList.size()] ) );
+	        AchievementPage.registerAchievementPage( page );
         }
-
-        String tabName = CustomAchievements.proxy.ar.root.tabname.isEmpty() ? "Custom Achievements" : CustomAchievements.proxy.ar.root.tabname;
-        page = new AchievementPage( tabName, achievements.values().toArray( new Achievement[achievements.size()] ) );
-        AchievementPage.registerAchievementPage( page );
     }
 
     public static void trigger( Achievement achievement, EntityPlayer player ){
