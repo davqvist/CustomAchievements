@@ -68,7 +68,7 @@ public class AchievementsReader {
         public String tabname;
         public ArrayList<AchievementList> achievements = new ArrayList<>();
     }
-
+    
     public class AchievementList {
         public String uid;
         public String name;

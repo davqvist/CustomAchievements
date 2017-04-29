@@ -1,8 +1,6 @@
 package com.davqvist.customachievements.tileentity;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -30,7 +28,7 @@ public class TileEntityTrophy extends TileEntity {
     @Override
     public NBTTagCompound writeToNBT( NBTTagCompound compound ){
         super.writeToNBT( compound );
-        if( is != null ){ compound.setTag( "item", is.serializeNBT() ); }
+        if( !is.isEmpty() ){ compound.setTag( "item", is.serializeNBT() ); }
         if( player != null && !player.isEmpty() ){ compound.setString( "player", player ); }
         if( facing != null ){ compound.setInteger( "facing", facing.getHorizontalIndex() ); }
         return compound;
@@ -47,7 +45,7 @@ public class TileEntityTrophy extends TileEntity {
     public void readFromNBT( NBTTagCompound compound ){
         super.readFromNBT( compound );
         if( compound.hasKey( "item" ) ){
-            is = ItemStack.loadItemStackFromNBT( (NBTTagCompound) compound.getTag( "item" ) );
+            is = new ItemStack( (NBTTagCompound) compound.getTag( "item" ) );
         }
         if( compound.hasKey( "player" ) ){
             player = compound.getString( "player" );

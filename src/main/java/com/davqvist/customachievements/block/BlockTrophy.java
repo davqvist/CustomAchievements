@@ -1,14 +1,15 @@
 package com.davqvist.customachievements.block;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.davqvist.customachievements.material.MaterialStandard;
 import com.davqvist.customachievements.reference.Reference;
 import com.davqvist.customachievements.tileentity.TileEntityTrophy;
-import com.davqvist.customachievements.utility.LogHelper;
+
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
@@ -30,9 +31,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class BlockTrophy extends Block implements ITileEntityProvider {
 
     protected AxisAlignedBB BOUNDING_BOX = new AxisAlignedBB( 0, 0, 0, 1, 0.0625 * 6, 1 );
@@ -53,8 +51,8 @@ public class BlockTrophy extends Block implements ITileEntityProvider {
         NBTTagCompound compound = stack.getTagCompound();
         if( compound != null ){
             if( compound.hasKey( "item" ) ){
-                ItemStack is = ItemStack.loadItemStackFromNBT( (NBTTagCompound) compound.getTag( "item" ) );
-                if( is != null ){
+                ItemStack is = new ItemStack( (NBTTagCompound) compound.getTag( "item" ) );
+                if( !is.isEmpty() ){
                     tooltip.add( "Item: " + is.getDisplayName() );
                 }
             }
@@ -74,8 +72,8 @@ public class BlockTrophy extends Block implements ITileEntityProvider {
             TileEntity te = worldIn.getTileEntity( pos );
             if( te instanceof TileEntityTrophy ){
                 if( compound.hasKey( "item" ) ){
-                    ItemStack is = ItemStack.loadItemStackFromNBT( (NBTTagCompound) compound.getTag( "item" ) );
-                    if( is != null ){
+                    ItemStack is = new ItemStack( (NBTTagCompound) compound.getTag( "item" ) );
+                    if( !is.isEmpty() ){
                         ((TileEntityTrophy) te).setItemStack( is );
                     }
                 }
@@ -90,8 +88,9 @@ public class BlockTrophy extends Block implements ITileEntityProvider {
         }
     }
 
+    
     @Override
-    public IBlockState getStateForPlacement( World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, ItemStack stack ){
+    public IBlockState getStateForPlacement( World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer ){
         return this.getDefaultState().withProperty( FACING, placer.getHorizontalFacing().getOpposite() );
     }
 
@@ -116,8 +115,8 @@ public class BlockTrophy extends Block implements ITileEntityProvider {
         if( !worldIn.isRemote ){
             TileEntity te = worldIn.getTileEntity( pos );
             ItemStack stack = getItemFromBlock( worldIn, pos );
-            if( stack != null ){
-                worldIn.spawnEntityInWorld( new EntityItem( worldIn, pos.getX(), pos.getY(), pos.getZ(), stack ) );
+            if( !stack.isEmpty() ){
+                worldIn.spawnEntity( new EntityItem( worldIn, pos.getX(), pos.getY(), pos.getZ(), stack ) );
             }
         }
 
