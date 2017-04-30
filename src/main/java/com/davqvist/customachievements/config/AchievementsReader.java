@@ -13,44 +13,103 @@ import com.google.gson.stream.JsonReader;
 
 public class AchievementsReader {
 
-    public GsonStart root;
+    public AchievementsRoot root;
 
     public void readAchievements( File file ){
         if( file.exists() ){
             try {
                 Gson gson = new Gson();
                 JsonReader reader = new JsonReader( new FileReader( file ) );
-                root = gson.fromJson( reader, GsonStart.class );
+                root = gson.fromJson( reader, AchievementsRoot.class );
             } catch ( Exception e ){
                 LogHelper.error( "The CustomAchievements json was invalid and is ignored.");
                 e.printStackTrace();
             }
         } else{
-            root = new GsonStart();
-            root.tabname = "CustomAchievements";
-            AchievementList al1 = new AchievementList();
-            al1.uid = "detectLog";
-            al1.name = "Log detected";
-            al1.desc = "Pick up a log";
-            al1.type = "Detect";
-            al1.item = "minecraft:log";
-            al1.ignoreMeta = true;
-            al1.xpos = 0;
-            al1.ypos = 0;
-            root.achievements.add( al1 );
-            AchievementList al2 = new AchievementList();
-            al2.uid = "craftAcaciaPlanks";
-            al2.name = "Acacia Planks crafted";
-            al2.desc = "Craft Acacia Planks";
-            al2.type = "Craft";
-            al2.item = "minecraft:planks";
-            al2.meta = 4;
-            al2.parent = "detectLog";
-            al2.trophy = true;
-            al2.xpos = 1;
-            al2.ypos = 0;
-            root.achievements.add( al2 );
+        	root = new AchievementsRoot();
+            AchievementTab tab = new AchievementTab();
+            tab.tabname = "CustomAchievements 1";
+            
+            AchievementDesciptor desc = new AchievementDesciptor();
+            desc.uid = "detectLog";
+            desc.name = "Log detected";
+            desc.desc = "Pick up a log";
+            desc.type = AchievementType.DETECT;
+            desc.item = "minecraft:log";
+            desc.ignoreMeta = true;
+            desc.xpos = 0;
+            desc.ypos = 0;
+            tab.achievements.add(desc);
+            
+            desc = new AchievementDesciptor();
+            desc.uid = "craftAcaciaPlanks";
+            desc.name = "Acacia Planks crafted";
+            desc.desc = "Craft Acacia Planks";
+            desc.type = AchievementType.CRAFT;
+            desc.item = "minecraft:planks";
+            desc.meta = 4;
+            desc.parent = "detectLog";
+            desc.xpos = 2;
+            desc.ypos = 0;
+            tab.achievements.add(desc);
 
+            desc = new AchievementDesciptor();
+            desc.uid = "placeCrafting";
+            desc.name = "Crafting Table placed";
+            desc.desc = "Place a Crafting Table";
+            desc.type = AchievementType.PLACE;
+            desc.item = "minecraft:crafting_table";
+            desc.parent = "craftAcaciaPlanks";
+            desc.trophy = true;
+            desc.xpos = 2;
+            desc.ypos = 2;
+            tab.achievements.add(desc);
+            
+            desc = new AchievementDesciptor();
+            desc.uid = "breakCrafting";
+            desc.name = "Crafting Table broken";
+            desc.desc = "Break a Crafting Table";
+            desc.type = AchievementType.MINE;
+            desc.item = "minecraft:crafting_table";
+            desc.parent = "placeCrafting";
+            desc.trophy = true;
+            desc.xpos = 0;
+            desc.ypos = 2;
+            tab.achievements.add(desc);
+            
+            root.tabs.add(tab);
+            
+            tab = new AchievementTab();
+            tab.tabname = "CustomAchievements 2";
+
+            desc = new AchievementDesciptor();
+            desc.uid = "jump5";
+            desc.name = "Five jumps";
+            desc.desc = "Jump five times";
+            desc.type = AchievementType.STAT;
+            desc.item = "minecraft:rabbit_foot";
+            desc.stat = "stat.jump";
+            desc.statValue = 5;
+            desc.trophy = false;
+            desc.xpos = 0;
+            desc.ypos = 0;
+            tab.achievements.add( desc );
+            
+            desc = new AchievementDesciptor();
+            desc.uid = "killZombie";
+            desc.name = "Zombie killed";
+            desc.desc = "Kill a zombie";
+            desc.type = AchievementType.KILL;
+            desc.item = "minecraft:rotten_flesh";
+            desc.mob = "Zombie";
+            desc.parent = "jump5";
+            desc.trophy = true;
+            desc.xpos = 2;
+            desc.ypos = 0;
+            tab.achievements.add( desc );
+            
+            root.tabs.add(tab);
+            
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String json = gson.toJson( root );
             try {
@@ -64,22 +123,39 @@ public class AchievementsReader {
         }
     }
 
-    public class GsonStart {
-        public String tabname;
-        public ArrayList<AchievementList> achievements = new ArrayList<>();
+    public class AchievementsRoot {
+    	public ArrayList<AchievementTab> tabs = new ArrayList<>();
     }
     
-    public class AchievementList {
+    public class AchievementTab {
+    	public String tabname;
+        public ArrayList<AchievementDesciptor> achievements = new ArrayList<>();
+    }
+    
+    public class AchievementDesciptor {
         public String uid;
         public String name;
         public String desc;
-        public String type;
+        public AchievementType type;
         public String item;
+        public String mob;
+        public String stat;
+        public int statValue;
         public Integer meta;
         public boolean ignoreMeta;
         public String parent;
         public boolean trophy;
         public Integer xpos;
         public Integer ypos;
+        
+        @Override
+        public int hashCode() {
+        	return uid.hashCode();
+        }
     }
+    
+    public enum AchievementType {
+    	CRAFT, DETECT, KILL, STAT, MINE, PLACE
+    }
+
 }
