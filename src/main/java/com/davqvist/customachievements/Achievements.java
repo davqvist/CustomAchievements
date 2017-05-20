@@ -58,8 +58,12 @@ public class Achievements {
 
     public static void trigger( Achievement achievement, EntityPlayer player ){
         if(player != null && !player.world.isRemote && !player.hasAchievement(achievement)){
-            player.addStat(achievement);
+            boolean getTrophy = false;
             if(achievementsDescriptors.inverse().get(achievement).trophy){
+                getTrophy = true;
+            }
+            player.addStat(achievement);
+            if(getTrophy && player.hasAchievement(achievement)){
                 ItemStack is = new ItemStack(ModBlocks.trophy);
                 NBTTagCompound compound = NBTHelper.getTagCompound(is);
                 compound.setTag("item", achievement.theItemStack.serializeNBT());

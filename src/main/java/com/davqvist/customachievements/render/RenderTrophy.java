@@ -16,7 +16,7 @@ public class RenderTrophy extends TileEntitySpecialRenderer {
     public void renderTileEntityAt( TileEntity te, double x, double y, double z, float partialTick, int destroyStage ){
         if( ( te instanceof TileEntityTrophy) ){
             ItemStack stack = ((TileEntityTrophy) te).getItemStack();
-            if( !stack.isEmpty() ){
+            if( stack != null && !stack.isEmpty() ){
                 GlStateManager.pushMatrix();
                 GlStateManager.translate( (float) x + 0.5f, (float) y + 0.75f, (float) z + 0.5f );
                 double time = Minecraft.getSystemTime();

@@ -28,7 +28,7 @@ public class TileEntityTrophy extends TileEntity {
     @Override
     public NBTTagCompound writeToNBT( NBTTagCompound compound ){
         super.writeToNBT( compound );
-        if( !is.isEmpty() ){ compound.setTag( "item", is.serializeNBT() ); }
+        if( is != null && !is.isEmpty() ){ compound.setTag( "item", is.serializeNBT() ); }
         if( player != null && !player.isEmpty() ){ compound.setString( "player", player ); }
         if( facing != null ){ compound.setInteger( "facing", facing.getHorizontalIndex() ); }
         return compound;
