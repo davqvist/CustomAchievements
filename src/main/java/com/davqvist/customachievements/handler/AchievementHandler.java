@@ -23,8 +23,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 
-import static sun.audio.AudioPlayer.player;
-
 public class AchievementHandler {
 
     @SubscribeEvent
