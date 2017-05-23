@@ -107,6 +107,32 @@ public class AchievementsReader {
             desc.xpos = 2;
             desc.ypos = 0;
             tab.achievements.add( desc );
+
+            desc = new AchievementDesciptor();
+            desc.uid = "interactFurnace";
+            desc.name = "Furnace opened";
+            desc.desc = "Right clicked Furnace";
+            desc.type = AchievementType.INTERACT;
+            desc.item = "minecraft:furnace";
+            desc.ignoreMeta = true;
+            desc.trophy = true;
+            desc.xpos = 0;
+            desc.ypos = 2;
+            tab.achievements.add( desc );
+
+            desc = new AchievementDesciptor();
+            desc.uid = "useBow";
+            desc.name = "Shot bow";
+            desc.desc = "Right clicked bow";
+            desc.type = AchievementType.USE;
+            desc.item = "minecraft:bow";
+            desc.ignoreMeta = true;
+            desc.parent = "interactFurnace";
+            desc.trophy = true;
+            desc.xpos = 2;
+            desc.ypos = 2;
+            tab.achievements.add( desc );
+
             
             root.tabs.add(tab);
             
@@ -155,7 +181,7 @@ public class AchievementsReader {
     }
     
     public enum AchievementType {
-    	CRAFT, DETECT, KILL, STAT, MINE, PLACE, CLICK
+    	CRAFT, DETECT, KILL, STAT, MINE, PLACE, INTERACT, USE
     }
 
 }

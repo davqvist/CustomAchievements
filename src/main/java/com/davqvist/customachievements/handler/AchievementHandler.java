@@ -75,12 +75,15 @@ public class AchievementHandler {
 
 	@SubscribeEvent
 	public void onClickEvent( PlayerInteractEvent.RightClickBlock event) {
-    	if (event.getEntity() instanceof EntityPlayer && event.getPos() != null) {
+    	if(event.getPos() != null){
             IBlockState state = event.getWorld().getBlockState(event.getPos());
-            Block block = state.getBlock();
-            int meta = block.getMetaFromState(state);
-            propagate(event.getEntityPlayer(), AchievementType.CLICK, new ItemStack(block, 1, meta));
+            propagate(event.getEntityPlayer(), AchievementType.INTERACT, state);
 		}
+	}
+
+	@SubscribeEvent
+	public void onClickEvent( PlayerInteractEvent.RightClickItem event) {
+		propagate(event.getEntityPlayer(), AchievementType.USE, event.getItemStack());
 	}
     
     private void propagate(EntityPlayer player, AchievementType type, IBlockState state) {
