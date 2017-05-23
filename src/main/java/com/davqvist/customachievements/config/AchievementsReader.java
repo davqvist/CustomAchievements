@@ -155,7 +155,7 @@ public class AchievementsReader {
     }
     
     public enum AchievementType {
-    	CRAFT, DETECT, KILL, STAT, MINE, PLACE
+    	CRAFT, DETECT, KILL, STAT, MINE, PLACE, CLICK
     }
 
 }

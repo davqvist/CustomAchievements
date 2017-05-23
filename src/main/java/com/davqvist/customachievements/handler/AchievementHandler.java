@@ -17,6 +17,7 @@ import net.minecraft.stats.StatBase;
 import net.minecraft.stats.StatList;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -71,6 +72,16 @@ public class AchievementHandler {
         	}
     	}
     }
+
+	@SubscribeEvent
+	public void onClickEvent( PlayerInteractEvent.RightClickBlock event) {
+    	if (event.getEntity() instanceof EntityPlayer && event.getPos() != null) {
+            IBlockState state = event.getWorld().getBlockState(event.getPos());
+            Block block = state.getBlock();
+            int meta = block.getMetaFromState(state);
+            propagate(event.getEntityPlayer(), AchievementType.CLICK, new ItemStack(block, 1, meta));
+		}
+	}
     
     private void propagate(EntityPlayer player, AchievementType type, IBlockState state) {
     	Block block = state.getBlock();
