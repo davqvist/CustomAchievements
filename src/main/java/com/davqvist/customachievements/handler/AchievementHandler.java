@@ -6,16 +6,22 @@ import com.davqvist.customachievements.Achievements;
 import com.davqvist.customachievements.config.AchievementsReader.AchievementDesciptor;
 import com.davqvist.customachievements.config.AchievementsReader.AchievementType;
 
+import com.davqvist.customachievements.init.ModBlocks;
+import com.davqvist.customachievements.utility.NBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.Achievement;
 import net.minecraft.stats.StatBase;
 import net.minecraft.stats.StatList;
+import net.minecraft.stats.StatisticsManagerServer;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.player.AchievementEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -84,6 +90,23 @@ public class AchievementHandler {
 	@SubscribeEvent
 	public void onClickEvent( PlayerInteractEvent.RightClickItem event) {
 		propagate(event.getEntityPlayer(), AchievementType.USE, event.getItemStack());
+	}
+
+	@SubscribeEvent
+	public void onAchievement( AchievementEvent event ) {
+		EntityPlayer player = event.getEntityPlayer();
+		Achievement achievement = event.getAchievement();
+		if( player != null && player instanceof EntityPlayerMP ){
+			StatisticsManagerServer statfile = ((EntityPlayerMP) player).getStatFile();
+			if( statfile.canUnlockAchievement( achievement ) && Achievements.achievementsDescriptors.inverse().containsKey(achievement) && Achievements.achievementsDescriptors.inverse().get(achievement).trophy ){
+				ItemStack is = new ItemStack(ModBlocks.trophy);
+				NBTTagCompound compound = NBTHelper.getTagCompound(is);
+				compound.setTag("item", achievement.theItemStack.serializeNBT());
+				compound.setString("player", player.getName());
+				is.setTagCompound(compound);
+				player.world.spawnEntity(new EntityItem(player.world, player.posX, player.posY, player.posZ, is));
+			}
+		}
 	}
     
     private void propagate(EntityPlayer player, AchievementType type, IBlockState state) {

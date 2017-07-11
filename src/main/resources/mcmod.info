@@ -3,7 +3,7 @@
    "modid": "customachievements",
    "name": "Custom Achievements",
    "description": "Create custom achievements only by editing a configuration file",
-   "version": "0.3.2",
+   "version": "0.3.3",
    "mcversion": "1.11.2",
    "url": "",
    "updateUrl": "",
