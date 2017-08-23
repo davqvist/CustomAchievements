@@ -5,7 +5,7 @@ import net.minecraft.block.material.Material;
 
 public class MaterialStandard extends Material {
 
-    public static final MaterialStandard STANDARD = new MaterialStandard( MapColor.GOLD );
+    public static final MaterialStandard STANDARD = new MaterialStandard( MapColor.BLACK );
 
     public MaterialStandard( MapColor color ){ super( color ); }
 

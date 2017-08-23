@@ -35,7 +35,8 @@ public class RenderTrophy extends TileEntitySpecialRenderer {
                 GlStateManager.rotate( 180, 0, 0, 1 );
                 EnumFacing facing = ((TileEntityTrophy) te).getFacing();
                 GlStateManager.rotate( facing.getHorizontalIndex()*90 + 180, 0, 1, 0 );
-                GlStateManager.translate( 0, 0, -0.5f );
+                GlStateManager.translate( 0, 0.03f, -0.36f );
+                GlStateManager.rotate( -45, 1, 0, 0 );
                 GlStateManager.scale( 0.008f, 0.008f, 1 );
                 getFontRenderer().drawString( player, - getFontRenderer().getStringWidth( player ) / 2, 0, 0 );
                 GlStateManager.popMatrix();
